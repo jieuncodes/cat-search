@@ -1,0 +1,22 @@
+export default class Loading {
+  constructor({ $app, initialState }) {
+    this.state = initialState;
+
+    this.$target = document.createElement("div");
+    this.$target.className = "loading modal";
+
+    $app.appendChild(this.$target);
+
+    this.render = () => {
+      this.$target.innerHTML = `<span>LOADING....</span>`;
+      console.log("loading?", this.state);
+      this.$target.style.display = this.state ? "block" : "none";
+    };
+
+    this.setState = (nextState) => {
+      this.state = nextState;
+      this.render();
+    };
+    this.render();
+  }
+}
