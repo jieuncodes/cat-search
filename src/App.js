@@ -10,7 +10,19 @@ export default class App {
       data: [],
       isLoading: true,
     };
-    
+
+    const handleSearchInput = async (keyword) => {
+      this.setState({ isLoading: true });
+      const data = await api.fetchCats(keyword);
+      this.setState({ data });
+      this.setState({isLoading: false });
+    };
+
+    new SearchInput({
+      $app,
+      onSearch: handleSearchInput,
+    });
+
     const imageInfo = new ImageInfo({
       $app,
       imageState: {
@@ -20,7 +32,6 @@ export default class App {
     });
 
     const handleImageClick = (event) => {
-      console.log("clicked1");
       imageInfo.setState({
         visible: true,
         image,
@@ -41,21 +52,12 @@ export default class App {
       loading.setState(this.state.isLoading);
     };
 
-    const handleSearchInput = async (keyword) => {
-      this.setState({ isLoading: true });
-      const data = await api.fetchCats(keyword);
-      this.setState({ data });
-      this.setState({isLoading: false });
-    };
-
     
     const init = async() => {
       try {
+       
         this.setState({isLoading: true });
-        new SearchInput({
-          $app,
-          onSearch: handleSearchInput,
-        });
+        
       } catch (e) {
         console.log("error", e);
       } finally {
