@@ -9,63 +9,68 @@ export default class App {
     this.state = {
       data: [],
       isLoading: true,
+      isDarkMode: false,
     };
+    this.setupDarkModeToggle();
 
     const handleSearchInput = async (keyword) => {
       this.setState({ isLoading: true });
       const data = await api.fetchCats(keyword);
-      this.setState({ data });
-      this.setState({isLoading: false });
+      this.setState({ data, isLoading: false });
     };
 
     new SearchInput({
       $app,
       onSearch: handleSearchInput,
     });
-
     const imageInfo = new ImageInfo({
       $app,
       imageState: {
         visible: false,
-        image: null,
+        catDetails: null,
       },
     });
+    const handleImageInfo = async (id) => {
+      const catDetails = await api.fetchCatInfo(id);
+      console.log(catDetails);
 
-    const handleImageClick = (event) => {
-      console.log(event.currentTarget);
       imageInfo.setState({
         visible: true,
-        image,
+        catDetails,
       });
     };
-
     const searchResult = new SearchResult({
       $app,
       initialData: this.state.data,
-      onClick: handleImageClick,
+      onClick: handleImageInfo,
     });
-
     const loading = new Loading({ $app, initialState: this.state.isLoading });
 
     this.setState = (nextState) => {
-      this.state = {...this.state, ...nextState};
+      this.state = { ...this.state, ...nextState };
       searchResult.setState(this.state.data);
       loading.setState(this.state.isLoading);
     };
 
-    
-    const init = async() => {
+    const init = async () => {
       try {
-        this.setState({isLoading: true });
-        
+        this.setState({ isLoading: true });
       } catch (e) {
         console.log("error", e);
       } finally {
-        this.setState({isLoading: false });
-        console.log("this.state", this.state)
+        this.setState({ isLoading: false });
       }
     };
 
     init();
+  }
+
+  setupDarkModeToggle() {
+    const darkToggleCheckbox = document.getElementById("dark-toggle");
+
+    darkToggleCheckbox.addEventListener("change", (event) => {
+      const checkBox = event.target.closest("input");
+      document.body.classList.toggle("dark-mode", checkBox.checked);
+    });
   }
 }

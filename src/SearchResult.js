@@ -10,9 +10,7 @@ export default class SearchResult {
     this.onClick = onClick;
 
     this.setState = (nextData) => {
-      console.log("setstate in searchresult");
       this.data = nextData;
-      console.log("this.data", this.data);
 
       this.render();
     };
@@ -21,20 +19,33 @@ export default class SearchResult {
   }
 
   render() {
-    console.log("in render", this.data);
     this.$searchResult.innerHTML = this.data
       .map(
         (cat) => `
             <div class="item">
-              <img src=${cat.url} alt=${cat.name} />
+              <img data-id=${cat.id} data-name=${cat.name} src=${cat.url} alt=${cat.name} />
             </div>
           `
       )
       .join("");
 
     this.$searchResult.querySelectorAll(".item").forEach(($item, index) => {
-      $item.addEventListener("click", () => {
-        this.onClick(this.data[index]);
+      $item.addEventListener("click", (event) => {
+        this.onClick(event.target.dataset.id);
+      });
+      $item.addEventListener("mouseenter", (event) => {
+        const hoverBox = document.createElement("div");
+        hoverBox.className = "hover-box";
+
+        const imgElement = event.currentTarget.firstElementChild;
+        hoverBox.innerHTML = imgElement.dataset.name;
+        $item.appendChild(hoverBox);
+      });
+      $item.addEventListener("mouseleave", (event) => {
+        const hoverBox = document.querySelector(".hover-box");
+        if (hoverBox) {
+          $item.removeChild(hoverBox);
+        }
       });
     });
   }

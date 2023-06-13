@@ -126,3 +126,7 @@ body.dark-mode {
     top: 0;
     font-size: xx-large;
 }
+
+.hover-box {
+    box-sizing: border-box;
+}

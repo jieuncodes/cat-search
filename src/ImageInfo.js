@@ -17,7 +17,7 @@ export default class ImageInfo {
 
   render() {
     if (this.imageState.visible) {
-      const { name, url, temperament, origin } = this.imageState.image;
+      const { name, url, temperament, origin } = this.imageState.catDetails;
 
       this.$imageInfo.innerHTML = `
           <div class="content-wrapper">
