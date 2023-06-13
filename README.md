@@ -1,3 +1,4 @@
 [ ] - use sementic elements instead of div
-[ ] = responsive grid
-[ ]
+[x] - responsive grid
+[ ] - Separate message accroding to the state code
+[x] - Loading component

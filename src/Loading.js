@@ -9,7 +9,6 @@ export default class Loading {
 
     this.render = () => {
       this.$target.innerHTML = `<span>LOADING....</span>`;
-      console.log("loading?", this.state);
       this.$target.style.display = this.state ? "block" : "none";
     };
 
