@@ -1,16 +1,9 @@
-@font-face {
-    font-family: "Goyang";
-    src: url("fonts/Goyang.woff") format("woff");
-    font-weight: normal;
-    font-style: normal;
-}
 
 html {
     box-sizing: border-box;
 }
 
 body * {
-    font-family: Goyang;
 }
 
 *,

@@ -9,9 +9,12 @@ export const api = {
         console.log("error fetching data");
       }
       const data = await res.json();
+      console.log("data", data);
+
       return data.data;
     } catch (e) {
       console.warn(e);
+      throw new Error("error fetching data");
     }
   },
 };

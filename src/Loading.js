@@ -14,9 +14,9 @@ export default class Loading {
     };
 
     this.setState = (nextState) => {
+      console.log(nextState);
       this.state = nextState;
       this.render();
     };
-    this.render();
   }
 }

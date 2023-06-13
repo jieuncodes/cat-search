@@ -10,6 +10,7 @@ export default class App {
       data: [],
       isLoading: true,
     };
+    
     const imageInfo = new ImageInfo({
       $app,
       imageState: {
@@ -35,33 +36,39 @@ export default class App {
     const loading = new Loading({ $app, initialState: this.state.isLoading });
 
     this.setState = (nextState) => {
-      this.state = nextState;
-
+      this.state = {...this.state, ...nextState};
       searchResult.setState(this.state.data);
       loading.setState(this.state.isLoading);
     };
 
     const handleSearchInput = async (keyword) => {
+      this.setState({ isLoading: true });
       const data = await api.fetchCats(keyword);
-      console.log(data);
       this.setState({ data });
+      this.setState({isLoading: false });
+
     };
 
-    this.init = () => {
+    
+    const init = async() => {
       try {
-        this.setState({ ...this.state, isLoading: true });
+        this.setState({isLoading: true });
 
         new SearchInput({
           $app,
           onSearch: handleSearchInput,
         });
+        
+
       } catch (e) {
         console.log("error", e);
+
       } finally {
-        this.setState({ ...this.state, isLoading: false });
+        this.setState({isLoading: false });
+        console.log("this.state", this.state)
       }
     };
 
-    this.init();
+    init();
   }
 }

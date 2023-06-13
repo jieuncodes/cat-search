@@ -1,8 +1,4 @@
 export default class SearchResult {
-  $searchResult = null;
-  data = null;
-  onClick = null;
-
   constructor({ $app, initialData, onClick }) {
     this.$searchResult = document.createElement("div");
     this.$searchResult.className = "SearchResult";
