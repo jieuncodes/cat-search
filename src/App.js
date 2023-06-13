@@ -32,6 +32,7 @@ export default class App {
     });
 
     const handleImageClick = (event) => {
+      console.log(event.currentTarget);
       imageInfo.setState({
         visible: true,
         image,
@@ -55,7 +56,6 @@ export default class App {
     
     const init = async() => {
       try {
-       
         this.setState({isLoading: true });
         
       } catch (e) {

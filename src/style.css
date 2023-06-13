@@ -17,6 +17,12 @@ html {
     }
 }
 
+
+body {
+    background-color: #FFFFFF;
+    color: #000000;
+}
+
 body.dark-mode {
     background-color: #000000;
     color: #FFFFFF;

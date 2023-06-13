@@ -1,7 +1,4 @@
 export default class ImageInfo {
-  $imageInfo = null;
-  imageState = null;
-
   constructor({ $app, imageState }) {
     const $imageInfo = document.createElement("div");
     $imageInfo.className = "ImageInfo";
@@ -11,12 +8,12 @@ export default class ImageInfo {
     this.imageState = imageState;
 
     this.render();
-  }
 
-  setState = (nextImageState) => {
-    this.imageState = nextImageState;
-    this.render();
-  };
+    this.setState = (nextImageState) => {
+      this.imageState = nextImageState;
+      this.render();
+    };
+  }
 
   render() {
     if (this.imageState.visible) {
