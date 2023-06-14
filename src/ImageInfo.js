@@ -10,7 +10,6 @@ export default class ImageInfo {
     this.render();
 
     this.setState = (nextImageState) => {
-      console.log("nextImageState", nextImageState);
       this.imageState = nextImageState;
       this.render();
       this.addEventListeners();
@@ -42,18 +41,21 @@ export default class ImageInfo {
     }
   }
   addEventListeners() {
-    const closeBtn = this.$imageInfo.querySelector(".close");
-    closeBtn.addEventListener("click", () => {
-      this.$imageInfo.style.display = "none";
-    });
-    window.addEventListener("click", (e) => {
-      const modal = e.target.closest(".content-wrapper");
-      if (!modal || !modal.contains(e.target)) {
-        this.closeModal();
+    document.addEventListener("click", (event) => {
+      if (this.$imageInfo.contains(event.target)) {
+        if (event.target.className === "close") {
+          this.$imageInfo.style.display = "none";
+        }
+
+        const modal = event.target.closest(".content-wrapper");
+        if (!modal || !modal.contains(event.target)) {
+          this.closeModal();
+        }
       }
     });
-    window.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") {
+
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
         this.closeModal();
       }
     });

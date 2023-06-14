@@ -8,6 +8,9 @@
 [x] - modal : add close modal event
 [x] - modal : render temperament, birth info through "/cats/:id".
 [x] - modal : fade-in effect when open/close
+[ ] - UI for empty result
+[ ] - recent search history & navigation
+
 
 # bugs to fix
 [ ] - flickering issue when modal opens
