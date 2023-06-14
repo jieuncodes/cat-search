@@ -11,42 +11,59 @@ export default class SearchResult {
 
     this.setState = (nextData) => {
       this.data = nextData;
-
       this.render();
     };
 
     this.render();
+    document.addEventListener("mouseenter", this.onMouseEnter.bind(this), true);
+    document.addEventListener("mouseleave", this.onMouseLeave.bind(this), true);
+    this.addImageEventListeners();
   }
 
   render() {
     this.$searchResult.innerHTML = this.data
       .map(
         (cat) => `
-            <div class="item">
-              <img data-id=${cat.id} data-name=${cat.name} src=${cat.url} alt=${cat.name} />
-            </div>
-          `
+                <div class="item">
+                  <img data-id=${cat.id} data-name=${cat.name} src=${cat.url} alt=${cat.name} />
+                </div>
+              `
       )
       .join("");
+  }
 
-    this.$searchResult.querySelectorAll(".item").forEach(($item, index) => {
-      $item.addEventListener("click", (event) => {
-        this.onClick(event.target.dataset.id);
-      });
-      $item.addEventListener("mouseenter", (event) => {
-        const hoverBox = document.createElement("div");
-        hoverBox.className = "hover-box";
+  onMouseEnter(event) {
+    if (
+      !(event.target instanceof Element) ||
+      !event.target.matches(".SearchResult .item img")
+    ) {
+      return;
+    }
+    const hoverBox = document.createElement("div");
+    hoverBox.className = "hover-box";
+    hoverBox.innerHTML = event.target.dataset.name;
+    event.target.parentNode.appendChild(hoverBox);
+  }
 
-        const imgElement = event.currentTarget.firstElementChild;
-        hoverBox.innerHTML = imgElement.dataset.name;
-        $item.appendChild(hoverBox);
-      });
-      $item.addEventListener("mouseleave", (event) => {
-        const hoverBox = document.querySelector(".hover-box");
-        if (hoverBox) {
-          $item.removeChild(hoverBox);
-        }
-      });
+  onMouseLeave(event) {
+    if (
+      !(event.target instanceof Element) ||
+      !event.target.matches(".SearchResult .item img")
+    ) {
+      return;
+    }
+
+    const hoverBox = event.target.parentNode.querySelector(".hover-box");
+    if (hoverBox) {
+      event.target.parentNode.removeChild(hoverBox);
+    }
+  }
+
+  addImageEventListeners() {
+    document.addEventListener("click", (event) => {
+      const id = event.target.dataset.id;
+      if (!id) return;
+      this.onClick(id);
     });
   }
 }
