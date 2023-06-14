@@ -14,9 +14,15 @@ export default class App {
     this.setupDarkModeToggle();
 
     const handleSearchInput = async (keyword) => {
-      this.setState({ isLoading: true });
-      const data = await api.fetchCats(keyword);
-      this.setState({ data, isLoading: false });
+      try {
+        this.setState({ isLoading: true });
+        const data = await api.fetchCats(keyword);
+        this.setState({ data });
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.setState({ isLoading: false });
+      }
     };
 
     new SearchInput({
@@ -43,26 +49,18 @@ export default class App {
       $app,
       initialData: this.state.data,
       onClick: handleImageClick,
+      initialLoadingState: this.state.isLoading,
     });
     const loading = new Loading({ $app, initialState: this.state.isLoading });
 
     this.setState = (nextState) => {
       this.state = { ...this.state, ...nextState };
-      searchResult.setState(this.state.data);
+      searchResult.setState({
+        data: this.state.data,
+        isLoading: this.state.isLoading,
+      });
       loading.setState(this.state.isLoading);
     };
-
-    const init = async () => {
-      try {
-        this.setState({ isLoading: true });
-      } catch (e) {
-        console.log("error", e);
-      } finally {
-        this.setState({ isLoading: false });
-      }
-    };
-
-    init();
   }
 
   setupDarkModeToggle() {

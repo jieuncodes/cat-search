@@ -1,5 +1,5 @@
 export default class SearchResult {
-  constructor({ $app, initialData, onClick }) {
+  constructor({ $app, initialData, onClick, initialLoadingState }) {
     this.$target = document.querySelector(".results");
     this.$searchResult = document.createElement("div");
     this.$searchResult.className = "SearchResult";
@@ -8,28 +8,35 @@ export default class SearchResult {
 
     this.data = initialData;
     this.onClick = onClick;
+    this.isLoading = initialLoadingState;
 
-    this.setState = (nextData) => {
-      this.data = nextData;
+    this.setState = (nextState) => {
+      this.data = nextState.data;
+      this.isLoading = nextState.isLoading;
       this.render();
     };
 
-    this.render();
     document.addEventListener("mouseenter", this.onMouseEnter.bind(this), true);
     document.addEventListener("mouseleave", this.onMouseLeave.bind(this), true);
     this.addImageEventListeners();
   }
 
   render() {
-    this.$searchResult.innerHTML = this.data
-      .map(
-        (cat) => `
-                <div class="item">
-                  <img data-id=${cat.id} data-name=${cat.name} src=${cat.url} alt=${cat.name} />
-                </div>
-              `
-      )
-      .join("");
+    if (!this.isLoading) {
+      if (!this.data || this.data.length === 0) {
+        this.$searchResult.innerHTML = `<div class="no-result">검색 결과가 없습니다.</div>`;
+      } else {
+        this.$searchResult.innerHTML = this.data
+          .map(
+            (cat) => `
+                    <div class="item">
+                      <img data-id=${cat.id} data-name=${cat.name} src=${cat.url} alt=${cat.name} />
+                    </div>
+                  `
+          )
+          .join("");
+      }
+    }
   }
 
   onMouseEnter(event) {
