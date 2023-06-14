@@ -1,6 +1,8 @@
-import { api } from "./api.js";
+import { api } from "../api.js";
+import { addLocalStorageData } from "../util/saveLocalStorage.js";
 import ImageInfo from "./ImageInfo.js";
 import Loading from "./Loading.js";
+import SearchHistory from "./SearchHistory.js";
 import SearchInput from "./SearchInput.js";
 import SearchResult from "./SearchResult.js";
 
@@ -8,6 +10,8 @@ export default class App {
   constructor($app) {
     this.state = {
       data: [],
+      history: JSON.parse(localStorage.getItem("searchHistory")) || [],
+
       isLoading: true,
       isDarkMode: false,
     };
@@ -22,12 +26,19 @@ export default class App {
         console.log(error);
       } finally {
         this.setState({ isLoading: false });
+
+        addLocalStorageData({ keyword, storageName: "searchHistory" });
+        this.state.history.push(keyword);
       }
     };
 
     new SearchInput({
       $app,
       onSearch: handleSearchInput,
+    });
+    const searchHistory = new SearchHistory({
+      keywords: this.state.history,
+      onClick: handleSearchInput,
     });
 
     const imageInfo = new ImageInfo({
@@ -45,6 +56,7 @@ export default class App {
         catDetails,
       });
     };
+
     const searchResult = new SearchResult({
       $app,
       initialData: this.state.data,
@@ -60,6 +72,7 @@ export default class App {
         isLoading: this.state.isLoading,
       });
       loading.setState(this.state.isLoading);
+      searchHistory.setState({ keywords: this.state.history });
     };
   }
 
