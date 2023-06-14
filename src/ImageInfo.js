@@ -10,9 +10,15 @@ export default class ImageInfo {
     this.render();
 
     this.setState = (nextImageState) => {
+      console.log("nextImageState", nextImageState);
       this.imageState = nextImageState;
       this.render();
+      this.addEventListeners();
     };
+  }
+  closeModal() {
+    this.$imageInfo.style.display = "none";
+    this.$imageInfo.firstElementChild.classList.remove("show");
   }
 
   render() {
@@ -20,7 +26,7 @@ export default class ImageInfo {
       const { name, url, temperament, origin } = this.imageState.catDetails;
 
       this.$imageInfo.innerHTML = `
-          <div class="content-wrapper">
+          <div class="content-wrapper fade-in-box show">
             <div class="title">
               <span>${name}</span>
               <div class="close">x</div>
@@ -31,9 +37,25 @@ export default class ImageInfo {
               <div>태생: ${origin}</div>
             </div>
           </div>`;
+
       this.$imageInfo.style.display = "block";
-    } else {
-      this.$imageInfo.style.display = "none";
     }
+  }
+  addEventListeners() {
+    const closeBtn = this.$imageInfo.querySelector(".close");
+    closeBtn.addEventListener("click", () => {
+      this.$imageInfo.style.display = "none";
+    });
+    window.addEventListener("click", (e) => {
+      const modal = e.target.closest(".content-wrapper");
+      if (!modal || !modal.contains(e.target)) {
+        this.closeModal();
+      }
+    });
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        this.closeModal();
+      }
+    });
   }
 }

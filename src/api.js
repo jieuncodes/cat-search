@@ -8,11 +8,14 @@ export const api = {
       if (!res.status === 200) {
         console.log("error fetching data");
       }
+      if (res.status === 500) {
+        console.log("Please refresh the page. error fetching data.");
+      }
       const data = await res.json();
       return data.data;
     } catch (e) {
       console.warn(e);
-      throw new Error("error fetching data");
+      throw new Error("error fetching data.Please refresh the page. ");
     }
   },
   fetchCatInfo: async (id) => {

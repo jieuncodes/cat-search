@@ -23,6 +23,7 @@ export default class App {
       $app,
       onSearch: handleSearchInput,
     });
+
     const imageInfo = new ImageInfo({
       $app,
       imageState: {
@@ -30,9 +31,8 @@ export default class App {
         catDetails: null,
       },
     });
-    const handleImageInfo = async (id) => {
+    const handleImageClick = async (id) => {
       const catDetails = await api.fetchCatInfo(id);
-      console.log(catDetails);
 
       imageInfo.setState({
         visible: true,
@@ -42,7 +42,7 @@ export default class App {
     const searchResult = new SearchResult({
       $app,
       initialData: this.state.data,
-      onClick: handleImageInfo,
+      onClick: handleImageClick,
     });
     const loading = new Loading({ $app, initialState: this.state.isLoading });
 
