@@ -1,33 +1,40 @@
+import { getLocalStorageData } from "../util/storageHandler.js";
+
 export default class SearchHistory {
-  constructor({ keywords, onClick }) {
+  constructor({ onClick }) {
     this.onClick = onClick;
-    this.keywords = keywords;
-    const searchHistoryContianer = document.getElementById("recent-search");
-    this.$target = document.createElement("div");
-    searchHistoryContianer.appendChild(this.$target);
+    this.savedLocalStorage = getLocalStorageData();
 
-    this.setState = () => {
-      const parsedData =
-        JSON.parse(localStorage.getItem("searchHistory")) || [];
-      this.keywords = parsedData;
-      this.render();
-    };
+    const searchHistoryContainer = document.getElementById("recent-search");
+    this.$target = this.createHistoryList(searchHistoryContainer);
 
-    this.render = () => {
-      const fiveRecentKeyword = this.keywords.slice(-5).reverse();
-      this.$target.innerHTML = fiveRecentKeyword
-        .map((keyword) => {
-          return `<span data-btn-type="history">${keyword}</span>`;
-        })
-        .join(" ");
-      console.log(this.$target);
-    };
+    this.setState = this.updateState.bind(this);
+    this.render = this.renderList.bind(this);
     this.render();
-    this.handleKeywordClick();
+    this.setupClickHandler();
   }
-  handleKeywordClick() {
+
+  createHistoryList(container) {
+    const list = document.createElement("ul");
+    container.appendChild(list);
+    return list;
+  }
+
+  updateState() {
+    this.savedLocalStorage = getLocalStorageData();
+    this.render();
+  }
+
+  renderList() {
+    const fiveRecentKeyword = this.savedLocalStorage.slice(-5).reverse();
+    this.$target.innerHTML = fiveRecentKeyword
+      .map((keyword) => `<li data-btn-type="history">${keyword}</li>`)
+      .join(" ");
+  }
+
+  setupClickHandler() {
     this.$target.addEventListener("click", (e) => {
-      if (!e.target.dataset.btnType === "history") {
+      if (e.target.dataset.btnType !== "history") {
         return;
       }
       const keyword = e.target.innerText;

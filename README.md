@@ -13,6 +13,7 @@
 - [ ] lazy load
 - [ ] scroll paging
 - [ ] random cat banner section
+- [x] separate err msg according to status code
 
 # bugs to fix
 - [ ] flickering issue when modal opens
