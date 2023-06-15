@@ -17,7 +17,5 @@ export default class SearchInput {
     });
 
     $searchInput.addEventListener("click", () => ($searchInput.value = ""));
-
-    console.log("SearchInput created.", this);
   }
 }

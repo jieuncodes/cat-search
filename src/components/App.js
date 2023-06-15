@@ -11,69 +11,49 @@ export default class App {
     this.state = {
       data: [],
       history: JSON.parse(localStorage.getItem("searchHistory")) || [],
-
       isLoading: true,
       isDarkMode: false,
-    };
-    this.setupDarkModeToggle();
-
-    const handleSearchInput = async (keyword) => {
-      try {
-        this.setState({ isLoading: true });
-        const data = await api.fetchCats(keyword);
-        this.setState({ data });
-      } catch (error) {
-        console.log(error);
-      } finally {
-        this.setState({ isLoading: false });
-
-        addLocalStorageData({ keyword, storageName: "searchHistory" });
-        this.state.history.push(keyword);
-      }
     };
 
     new SearchInput({
       $app,
-      onSearch: handleSearchInput,
-    });
-    const searchHistory = new SearchHistory({
-      keywords: this.state.history,
-      onClick: handleSearchInput,
+      onSearch: this.handleSearchInput.bind(this),
     });
 
-    const imageInfo = new ImageInfo({
+    this.searchHistory = new SearchHistory({
+      keywords: this.state.history,
+      onClick: this.handleSearchInput,
+    });
+
+    this.imageInfo = new ImageInfo({
       $app,
       imageState: {
         visible: false,
         catDetails: null,
       },
     });
-    const handleImageClick = async (id) => {
-      const catDetails = await api.fetchCatInfo(id);
+    
 
-      imageInfo.setState({
-        visible: true,
-        catDetails,
-      });
-    };
-
-    const searchResult = new SearchResult({
+    this.searchResult = new SearchResult({
       $app,
       initialData: this.state.data,
-      onClick: handleImageClick,
+      onClick: this.handleImageClick,
       initialLoadingState: this.state.isLoading,
     });
-    const loading = new Loading({ $app, initialState: this.state.isLoading });
+
+    this.loading = new Loading({ $app, initialState: this.state.isLoading });
 
     this.setState = (nextState) => {
       this.state = { ...this.state, ...nextState };
-      searchResult.setState({
+      this.searchResult.setState({
         data: this.state.data,
         isLoading: this.state.isLoading,
       });
-      loading.setState(this.state.isLoading);
-      searchHistory.setState({ keywords: this.state.history });
+      this.loading.setState(this.state.isLoading);
+      this.searchHistory.setState({ keywords: this.state.history });
     };
+
+    this.setupDarkModeToggle();
   }
 
   setupDarkModeToggle() {
@@ -84,4 +64,26 @@ export default class App {
       document.body.classList.toggle("dark-mode", checkBox.checked);
     });
   }
+
+  async handleImageClick(id){
+    const catDetails = await api.fetchCatInfo(id);
+
+    this.imageInfo.setState({
+      visible: true,
+      catDetails,
+    });
+  };
+  async handleSearchInput (keyword){
+    try {
+      this.setState({ isLoading: true });
+      const data = await api.fetchCats(keyword);
+      this.setState({ data });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      this.setState({ isLoading: false });
+      addLocalStorageData({ keyword, storageName: "searchHistory" });
+      this.state.history.push(keyword);
+    }
+  };
 }

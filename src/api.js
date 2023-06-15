@@ -1,34 +1,24 @@
-const API_ENDPOINT =
-  "https://q9d70f82kd.execute-api.ap-northeast-2.amazonaws.com/dev";
+const API_ENDPOINT = "https://q9d70f82kd.execute-api.ap-northeast-2.amazonaws.com/dev/api/cats/";
+
+async function fetchData(url, errorMsg) {
+  try {
+    const res = await fetch(url);
+    if (!res.status === 200) {
+      console.log(errorMsg);
+    }
+    if (res.status === 500) {
+      console.log("Please refresh the page. " + errorMsg);
+    }
+    const data = await res.json();
+    return data.data;
+  } catch (e) {
+    console.warn(e);
+    throw new Error(errorMsg + ". Please refresh the page.");
+  }
+}
 
 export const api = {
-  fetchCats: async (keyword) => {
-    try {
-      const res = await fetch(`${API_ENDPOINT}/api/cats/search?q=${keyword}`);
-      if (!res.status === 200) {
-        console.log("error fetching data");
-      }
-      if (res.status === 500) {
-        console.log("Please refresh the page. error fetching data.");
-      }
-      const data = await res.json();
-      return data.data;
-    } catch (e) {
-      console.warn(e);
-      throw new Error("error fetching data.Please refresh the page. ");
-    }
-  },
-  fetchCatInfo: async (id) => {
-    try {
-      const res = await fetch(`${API_ENDPOINT}/api/cats/${id}`);
-      if (!res.status === 200) {
-        console.log("error fetching cat info");
-      }
-      const data = await res.json();
-      return data.data;
-    } catch (e) {
-      console.warn(e);
-      throw new Error("error fetching cat info");
-    }
-  },
+  fetchCats: (keyword) => fetchData(`${API_ENDPOINT}search?q=${keyword}`, "error fetching data"),
+  fetchCatInfo: (id) => fetchData(`${API_ENDPOINT}${id}`, "error fetching cat info"),
+  fetchRandomCats: () => fetchData(`${API_ENDPOINT}arandom50`, "error fetching random cat info"),
 };
